@@ -6,30 +6,29 @@ body{
     text-align:center;
 }
 .title{
-    padding-top:10px;
-    padding-bottom:10px;
+    position: relative;
+    width:100%;
+    height:40px;
+    line-height: 40px;
+    background-color: blue;
 }
 
 #items{
     margin-left:20px;
-    position:relative;
     width:432px;
-    float:left;
-    background-color: blue;
+    position: absolute;
 }
 .item{
-    position:absolute;
+    position: absolute;
     box-sizing: border-box;
     width:27px;
     height:27px;
-    border:1px solid grey;
+    border:1px dotted grey;
 }
 #placeholder{
-    position: relative;
+    position: absolute;
     width: 1080px;
-    float:left;
-    margin-left:50px;
-    background-color: red;
+    margin-left:600px;
 }
 
 .mapField{
