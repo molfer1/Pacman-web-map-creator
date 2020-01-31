@@ -1,0 +1,41 @@
+body{
+    margin:0 auto;
+    color:white;
+    background-color: black;
+    font-size:18px;
+    text-align:center;
+}
+.title{
+    padding-top:10px;
+    padding-bottom:10px;
+}
+
+#items{
+    margin-left:20px;
+    position:relative;
+    width:432px;
+    float:left;
+    background-color: blue;
+}
+.item{
+    position:absolute;
+    box-sizing: border-box;
+    width:27px;
+    height:27px;
+    border:1px solid grey;
+}
+#placeholder{
+    position: relative;
+    width: 1080px;
+    float:left;
+    margin-left:50px;
+    background-color: red;
+}
+
+.mapField{
+    position:absolute;
+    box-sizing: border-box;
+    width:27px;
+    height:27px;
+    border:1px solid grey;
+}
