@@ -14,7 +14,7 @@ body{
 }
 
 #items{
-    margin-left:20px;
+    margin-left:30px;
     width:432px;
     position: absolute;
 }
@@ -25,9 +25,13 @@ body{
     height:27px;
     border:1px dotted grey;
 }
-#placeholder{
+.item:hover{
+    opacity:0.5;
+    border:1px solid red;
+}
+#map{
     position: absolute;
-    width: 1080px;
+    width: 756px;
     margin-left:600px;
 }
 
@@ -36,5 +40,10 @@ body{
     box-sizing: border-box;
     width:27px;
     height:27px;
-    border:1px solid grey;
+    border:1px dotted grey;
+}
+.mapField:hover{
+    opacity:0.7;
+    background-color: #333;
+    border:1px solid red;
 }
