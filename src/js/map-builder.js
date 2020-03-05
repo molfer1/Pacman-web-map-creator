@@ -2,8 +2,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
     const itemsField = document.getElementById('items');
     const map = document.getElementById('map');
     const menu = document.querySelector(".menu");
-    let menuVisible = false;
-
 
     const img = new Image();
     img.src = './data/img/sprites1.png';
@@ -72,7 +70,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
             let x = 0, y = 0;
             while (true) {
                 const canvas = document.createElement('canvas');
-                canvas.classList.add('mapField');
+                canvas.classList.add('mapTile');
+                canvas.addEventListener('click', function(){utilities.selectMapTile(x, y)});
                 canvas.id = 'x' + x + '_y' + y;
                 canvas.style.left = x * 27 + 'px';
                 canvas.style.top = y * 27 + 40 + 'px';
@@ -80,7 +79,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 x++;
                 if (x == 27) {
                     const canvas = document.createElement('canvas');
-                    canvas.classList.add('mapField');
+                    canvas.classList.add('mapTile');
                     canvas.id = 'x' + x + '_y' + y;
                     canvas.style.left = x * 27 + 'px';
                     canvas.style.top = y * 27 + 40 + 'px';
@@ -97,34 +96,35 @@ window.addEventListener('DOMContentLoaded', (event) => {
     class Utilities {
         constructor() {
         }
-        // showContextMenu() {
-        //     alert('contextmenu opened');
-
-        // }
 
         toggleMenu(command) {
             menu.style.display = command === "show" ? "block" : "none";
             menuVisible = !menuVisible;
         };
 
-        setPosition({ top, left }) {
+        setMenuPosition({ top, left }) {
             menu.style.left = `${left}px`;
             menu.style.top = `${top}px`;
             this.toggleMenu("show");
         };
-
+        selectMapTile(x,y){
+            // get el by id z x i y
+            console.log('tile' + x + y);
+        }
     };
+    let utilities = new Utilities;
+    let menuVisible = false;
+
+    // EVENT LISTENING
     window.addEventListener("click", e => {
-        if (menuVisible) Utilities.toggleMenu("hide");
+        if (menuVisible){
+            utilities.toggleMenu("hide");
+        } 
     });
     window.addEventListener("contextmenu", e => {
         e.preventDefault();
-        const origin = {
-            left: e.pageX,
-            top: e.pageY
-        };
-        Utilities.setPosition(origin);
-        return false;
+        const origin = {left: e.pageX, top: e.pageY};
+        utilities.setMenuPosition(origin);
     });
 });
 
