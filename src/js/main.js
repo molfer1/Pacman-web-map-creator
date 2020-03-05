@@ -1,1 +1,3 @@
-console.log('main.js loaded');
+// console.log('main.js loaded');
+// let utilities = new Utilities;
+// let menuVisible = false;

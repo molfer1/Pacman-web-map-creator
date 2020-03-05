@@ -71,7 +71,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
             while (true) {
                 const canvas = document.createElement('canvas');
                 canvas.classList.add('mapTile');
-                canvas.addEventListener('click', function(){utilities.selectMapTile(x, y)});
+                canvas.addEventListener('click', function () { utilities.selectMapTile(x, y) });
                 canvas.id = 'x' + x + '_y' + y;
                 canvas.style.left = x * 27 + 'px';
                 canvas.style.top = y * 27 + 40 + 'px';
@@ -107,7 +107,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
             menu.style.top = `${top}px`;
             this.toggleMenu("show");
         };
-        selectMapTile(x,y){
+        selectMapTile(x, y) {
             // get el by id z x i y
             console.log('tile' + x + y);
         }
@@ -117,13 +117,13 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
     // EVENT LISTENING
     window.addEventListener("click", e => {
-        if (menuVisible){
+        if (menuVisible) {
             utilities.toggleMenu("hide");
-        } 
+        }
     });
     window.addEventListener("contextmenu", e => {
         e.preventDefault();
-        const origin = {left: e.pageX, top: e.pageY};
+        const origin = { left: e.pageX, top: e.pageY };
         utilities.setMenuPosition(origin);
     });
 });
