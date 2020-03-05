@@ -1,7 +1,7 @@
 body{
     margin:0 auto;
     color:white;
-    background-color: black;
+    background-color: #333;
     font-size:18px;
     text-align:center;
 }
@@ -47,3 +47,38 @@ body{
     background-color: #333;
     border:1px solid red;
 }
+
+.menu {
+    position: absolute;
+    width: 150px;
+    background-color:#555;
+    box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    display: none;
+    z-index: 10;
+}
+
+.menu-options {
+    list-style-type: none;
+    text-align: center;
+    width:100%;
+    font-size: 0;
+}
+
+.menu-option {
+    width:100%;
+    height:30px;
+    margin-left: -40px;
+    line-height: 30px;
+    font-weight: 500;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.menu-option:hover {
+    opacity:0.6;
+    background-color:#777;
+    transition:0.5s;
+
+}
+  

@@ -5,12 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Packman</title>
-    <script src="/src/js/map-builder.js"></script>
-    <link rel="stylesheet" type="text/css" href="/src/css/style.css">
+    <title>Pacman</title>
+    <script src="./src/js/map-builder.js"></script>
+    <link rel="stylesheet" type="text/css" href="./src/css/style.css">
 </head>
 
 <body>
+    <div class="menu">
+        <ul class="menu-options">
+            <li id="undo" class="menu-option">Undo</li>
+            <li id="redo" class="menu-option">Redo</li>
+            <li id="cut" class="menu-option">Cut</li>
+            <li id="copy" class="menu-option">Copy</li>
+            <li id="paste" class="menu-option">Paste</li>
+            <li id="delete" class="menu-option">Delete</li>
+            <li id="saveToFile" class="menu-option">Save to file</li>
+            <li id="LoadDataFromFile" class="menu-option">Load data from file</li>
+        </ul>
+    </div>
     <div id="items">
         <div class="title">Items</div>
 

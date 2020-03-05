@@ -1,8 +1,12 @@
 window.addEventListener('DOMContentLoaded', (event) => {
     const itemsField = document.getElementById('items');
     const map = document.getElementById('map');
+    const menu = document.querySelector(".menu");
+    let menuVisible = false;
+
+
     const img = new Image();
-    img.src = '../../data/img/sprites.png';
+    img.src = './data/img/sprites1.png';
     img.addEventListener('load', function () {
         new Generator(this, 27);
     });
@@ -11,18 +15,18 @@ window.addEventListener('DOMContentLoaded', (event) => {
         constructor(img, size) {
             this.img = img;
             this.size = size;
-            this.gen_left(img, size);
+            this.genLeft(img, size);
         }
-        gen_left(img, size) {
+        genLeft(img, size) {
             let x = 0, y = 0;
             while (true) {
                 const canvas = document.createElement('canvas');
                 canvas.classList.add('item');
                 canvas.style.left = x * size + 'px';
                 canvas.style.top = y * size + 40 + 'px';
-                var f = function (xx, yy) {
+                const f = function (xx, yy) {
                     return function () {
-                        alert(xx, yy)
+                        console.log('sprites x: ' + xx, ', y: ' + yy);
                     }
                 };
                 canvas.onclick = f(x, y);
@@ -35,22 +39,22 @@ window.addEventListener('DOMContentLoaded', (event) => {
                     canvas.style.left = x * size + 'px';
                     canvas.style.top = y * size + 40 + 'px';
 
-                    var f = function (xx, yy) {
+                    const f = function (xx, yy) {
                         return function () {
-                            alert(xx, yy)
+                            console.log('sprites x: ' + xx, ', y: ' + yy);
                             // return [xx, yy]
                             // return this (access element without id )
                         }
                     };
-                    console.log(x, y);
                     canvas.onclick = f(x, y);
                     this.drawImg(img, canvas, x, y);
+
                     itemsField.appendChild(canvas);
                     x = 0;
                     y++;
                 }
                 if (y == 40) {
-                    this.buildRightSide()
+                    this.genRight()
                     break;
                 }
             }
@@ -64,7 +68,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 ctx.drawImage(img, 769 + x * 48, 1 + (y - 20) * 48, 46, 46, 1, 1, canvas.width, canvas.height);
             }
         }
-        buildRightSide() {
+        genRight() {
             let x = 0, y = 0;
             while (true) {
                 const canvas = document.createElement('canvas');
@@ -90,5 +94,37 @@ window.addEventListener('DOMContentLoaded', (event) => {
             }
         }
     }
+    class Utilities {
+        constructor() {
+        }
+        // showContextMenu() {
+        //     alert('contextmenu opened');
+
+        // }
+
+        toggleMenu(command) {
+            menu.style.display = command === "show" ? "block" : "none";
+            menuVisible = !menuVisible;
+        };
+
+        setPosition({ top, left }) {
+            menu.style.left = `${left}px`;
+            menu.style.top = `${top}px`;
+            this.toggleMenu("show");
+        };
+
+    };
+    window.addEventListener("click", e => {
+        if (menuVisible) Utilities.toggleMenu("hide");
+    });
+    window.addEventListener("contextmenu", e => {
+        e.preventDefault();
+        const origin = {
+            left: e.pageX,
+            top: e.pageY
+        };
+        Utilities.setPosition(origin);
+        return false;
+    });
 });
 
