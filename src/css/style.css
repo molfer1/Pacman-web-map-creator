@@ -1,9 +1,15 @@
+@font-face {
+    font-family: "Roboto-Light";
+    src: url("../../data/fonts/roboto/Roboto-Light.ttf");
+    }
 body{
     margin:0 auto;
     color:white;
     background-color: #333;
     font-size:18px;
     text-align:center;
+    font-family: "Roboto-Light";
+    font-weight: 400;
 }
 .title{
     position: relative;

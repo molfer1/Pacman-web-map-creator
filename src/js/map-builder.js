@@ -71,8 +71,9 @@ window.addEventListener('DOMContentLoaded', (event) => {
             while (true) {
                 const canvas = document.createElement('canvas');
                 canvas.classList.add('mapTile');
-                canvas.addEventListener('click', function () { utilities.selectMapTile(x, y) });
-                canvas.id = 'x' + x + '_y' + y;
+                const xx = x; const yy = y;
+                canvas.addEventListener('click', function () { utilities.selectSingleMapTile(xx, yy) });
+                canvas.id = 'x_' + x + 'y_' + y;
                 canvas.style.left = x * 27 + 'px';
                 canvas.style.top = y * 27 + 40 + 'px';
                 map.appendChild(canvas);
@@ -80,7 +81,9 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 if (x == 27) {
                     const canvas = document.createElement('canvas');
                     canvas.classList.add('mapTile');
-                    canvas.id = 'x' + x + '_y' + y;
+                    const xx = x; const yy = y;
+                    canvas.addEventListener('click', function () { utilities.selectSingleMapTile(xx, yy) });
+                    canvas.id = 'x_' + x + 'y_' + y;
                     canvas.style.left = x * 27 + 'px';
                     canvas.style.top = y * 27 + 40 + 'px';
                     map.appendChild(canvas);
@@ -107,24 +110,30 @@ window.addEventListener('DOMContentLoaded', (event) => {
             menu.style.top = `${top}px`;
             this.toggleMenu("show");
         };
-        selectMapTile(x, y) {
-            // get el by id z x i y
-            console.log('tile' + x + y);
+        selectSingleMapTile(x, y) {
+            console.log('tile x: ' + x + ' y: ' + y);
+            const tile = document.getElementById(`x_${x}y_${y}`)
         }
     };
     let utilities = new Utilities;
     let menuVisible = false;
 
     // EVENT LISTENING
-    window.addEventListener("click", e => {
+    window.addEventListener('click', e => {
         if (menuVisible) {
-            utilities.toggleMenu("hide");
+            utilities.toggleMenu('hide');
         }
     });
-    window.addEventListener("contextmenu", e => {
+    window.addEventListener('contextmenu', e => {
         e.preventDefault();
         const origin = { left: e.pageX, top: e.pageY };
         utilities.setMenuPosition(origin);
     });
+    window.addEventListener('keydown', e => {
+        console.log(e);
+        if (e.keyCode === 27) {
+            utilities.toggleMenu('hide');
+        }
+    })
 });
 
