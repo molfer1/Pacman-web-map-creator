@@ -1,8 +1,9 @@
-window.addEventListener('DOMContentLoaded', (event) => {
-    const itemsField = document.getElementById('items');
+window.addEventListener('DOMContentLoaded', (e) => {
+    const items = document.getElementById('items');
     const map = document.getElementById('map');
-    const menu = document.querySelector(".menu");
-
+    const menu = document.getElementById('menu');
+    const itemsTab = [];
+    var mapTab = [];
     const img = new Image();
     img.src = './data/img/sprites1.png';
     img.addEventListener('load', function () {
@@ -16,48 +17,53 @@ window.addEventListener('DOMContentLoaded', (event) => {
             this.genLeft(img, size);
         }
         genLeft(img, size) {
-            let x = 0, y = 0;
-            while (true) {
-                const canvas = document.createElement('canvas');
-                canvas.classList.add('item');
-                canvas.style.left = x * size + 'px';
-                canvas.style.top = y * size + 40 + 'px';
-                const f = function (xx, yy) {
-                    return function () {
-                        console.log('sprites x: ' + xx, ', y: ' + yy);
-                    }
-                };
-                canvas.onclick = f(x, y);
-                this.drawImg(img, canvas, x, y);
-                itemsField.appendChild(canvas);
-                x++;
-                if (x == 15) {
-                    const canvas = document.createElement('canvas');
-                    canvas.classList.add('item');
-                    canvas.style.left = x * size + 'px';
-                    canvas.style.top = y * size + 40 + 'px';
-
-                    const f = function (xx, yy) {
-                        return function () {
-                            console.log('sprites x: ' + xx, ', y: ' + yy);
-                            // return [xx, yy]
-                            // return this (access element without id )
-                        }
-                    };
-                    canvas.onclick = f(x, y);
-                    this.drawImg(img, canvas, x, y);
-
-                    itemsField.appendChild(canvas);
-                    x = 0;
-                    y++;
-                }
-                if (y == 40) {
-                    this.genRight()
-                    break;
+            for (let y = 0; y < 40; y++) {
+                itemsTab.push([]);
+                for (let x = 0; x <= 15; x++) {
+                    this.drawItemsTile(x, y, img, size);
+                    itemsTab[y].push({
+                        x: x,
+                        y: y,
+                    })
                 }
             }
+            console.table(itemsTab);
+            this.genRight(size);
         }
-        drawImg(img, canvas, x, y) {
+        genRight(size) {
+            for (let y = 0; y < 30; y++) {
+                mapTab.push([]);
+                for (let x = 0; x <= 27; x++) {
+                    this.drawMapTile(x, y, size);
+                    mapTab[y].push({
+                        x: x,
+                        y: y,
+                        isSelected: null,
+                    })
+                }
+            }
+            console.log(mapTab)
+        }
+        drawItemsTile(x, y, img, size) {
+            const canvas = document.createElement('canvas');
+            const xx = x; const yy = y;
+            canvas.addEventListener('click', function () { tiles.selectSingleItemTile(xx, yy) });
+            canvas.classList.add('item');
+            canvas.style.left = x * size + 'px';
+            canvas.style.top = y * size + 40 + 'px';
+            this.drawImg(x, y, img, canvas);
+            items.appendChild(canvas);
+        }
+        drawMapTile(x, y, size) {
+            const canvas = document.createElement('canvas');
+            const xx = x; const yy = y;
+            canvas.addEventListener('click', function () { tiles.selectSingleMapTile(xx, yy) });
+            canvas.classList.add('mapTile');
+            canvas.style.left = x * size + 'px';
+            canvas.style.top = y * size + 40 + 'px';
+            map.appendChild(canvas);
+        }
+        drawImg(x, y, img, canvas) {
             let ctx = canvas.getContext('2d');
             if (y < 20) {
                 ctx.drawImage(img, 1 + x * 48, 1 + y * 48, 46, 46, 1, 1, canvas.width, canvas.height);
@@ -66,39 +72,9 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 ctx.drawImage(img, 769 + x * 48, 1 + (y - 20) * 48, 46, 46, 1, 1, canvas.width, canvas.height);
             }
         }
-        genRight() {
-            let x = 0, y = 0;
-            while (true) {
-                const canvas = document.createElement('canvas');
-                canvas.classList.add('mapTile');
-                const xx = x; const yy = y;
-                canvas.addEventListener('click', function () { utilities.selectSingleMapTile(xx, yy) });
-                canvas.id = 'x_' + x + 'y_' + y;
-                canvas.style.left = x * 27 + 'px';
-                canvas.style.top = y * 27 + 40 + 'px';
-                map.appendChild(canvas);
-                x++;
-                if (x == 27) {
-                    const canvas = document.createElement('canvas');
-                    canvas.classList.add('mapTile');
-                    const xx = x; const yy = y;
-                    canvas.addEventListener('click', function () { utilities.selectSingleMapTile(xx, yy) });
-                    canvas.id = 'x_' + x + 'y_' + y;
-                    canvas.style.left = x * 27 + 'px';
-                    canvas.style.top = y * 27 + 40 + 'px';
-                    map.appendChild(canvas);
-                    x = 0;
-                    y++;
-                }
-                if (y == 30) {
-                    break;
-                }
-            }
-        }
     }
     class Utilities {
-        constructor() {
-        }
+        constructor() { }
 
         toggleMenu(command) {
             menu.style.display = command === "show" ? "block" : "none";
@@ -110,11 +86,21 @@ window.addEventListener('DOMContentLoaded', (event) => {
             menu.style.top = `${top}px`;
             this.toggleMenu("show");
         };
+    };
+    class Tiles {
+        constructor() { }
+
+        selectSingleItemTile(x, y) {
+            console.log('Item x: ' + x + ' y: ' + y);
+        }
+
         selectSingleMapTile(x, y) {
             console.log('tile x: ' + x + ' y: ' + y);
             const tile = document.getElementById(`x_${x}y_${y}`)
         }
-    };
+
+    }
+    let tiles = new Tiles;
     let utilities = new Utilities;
     let menuVisible = false;
 
