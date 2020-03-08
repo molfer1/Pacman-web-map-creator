@@ -1,1 +1,4 @@
-stwórz tabele z itemami gdzie pusszujesz cały itemy i tabele mapy z null value active i jakoś zrób przechowywanie w niej co jest i na jej podstawie renderuj
+1. Selecting more than 1 tile (if single select is used) should work only when you're pressing CRTL, not just normally. Change it .
+2. Make block selecting.
+3. Auto-selector.
+4. Context menu options.

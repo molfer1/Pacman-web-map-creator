@@ -27,7 +27,6 @@ window.addEventListener('DOMContentLoaded', (e) => {
                     })
                 }
             }
-            console.table(itemsTab);
             this.genRight(size);
         }
         genRight(size) {
@@ -38,16 +37,16 @@ window.addEventListener('DOMContentLoaded', (e) => {
                     mapTab[y].push({
                         x: x,
                         y: y,
-                        isSelected: null,
+                        isSelected: false,
+                        isFilled: false
                     })
                 }
             }
-            console.log(mapTab)
         }
         drawItemsTile(x, y, img, size) {
             const canvas = document.createElement('canvas');
             const xx = x; const yy = y;
-            canvas.addEventListener('click', function () { tiles.selectSingleItemTile(xx, yy) });
+            canvas.addEventListener('click', function () { tiles.drawInSelectedTiles(xx, yy) });
             canvas.classList.add('item');
             canvas.style.left = x * size + 'px';
             canvas.style.top = y * size + 40 + 'px';
@@ -59,6 +58,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
             const xx = x; const yy = y;
             canvas.addEventListener('click', function () { tiles.selectSingleMapTile(xx, yy) });
             canvas.classList.add('mapTile');
+            canvas.id = `c_${x}_${y}`;
             canvas.style.left = x * size + 'px';
             canvas.style.top = y * size + 40 + 'px';
             map.appendChild(canvas);
@@ -90,21 +90,52 @@ window.addEventListener('DOMContentLoaded', (e) => {
     class Tiles {
         constructor() { }
 
-        selectSingleItemTile(x, y) {
+        drawInSelectedTiles(x, y) {
             console.log('Item x: ' + x + ' y: ' + y);
+            for (const raw of mapTab) {
+                for (const el of raw) {
+                    if (el.isSelected == true) {
+                        const tile = document.getElementById(`c_${el.x}_${el.y}`);
+                        tile.classList.remove('mapTile', 'selected', 'mapItem');
+                        tile.classList.add('mapItem');
+                        this.redrawImg(x, y, img, tile);
+                        el.isSelected = false;
+                        el.isFilled = true;
+                    }
+                }
+            }
         }
 
         selectSingleMapTile(x, y) {
             console.log('tile x: ' + x + ' y: ' + y);
-            const tile = document.getElementById(`x_${x}y_${y}`)
+            const mapTile = document.getElementById(`c_${x}_${y}`);
+            if (mapTile.classList.contains('selected')) {
+                let index = mapTab[y].findIndex(function (el) { return el.x == x });
+                mapTab[y][index].isSelected = false;
+                mapTile.classList.remove('selected');
+            }
+            else {
+                mapTile.classList.add('selected');
+                let index = mapTab[y].findIndex(function (el) { return el.x == x });
+                mapTab[y][index].isSelected = true;
+            }
         }
-
+        redrawImg(x, y, img, canvas) {
+            let ctx = canvas.getContext('2d');
+            if (y < 20) {
+                ctx.drawImage(img, 1 + x * 48, 1 + y * 48, 46, 46, 1, 1, canvas.width, canvas.height);
+            }
+            else if (y >= 20) {
+                ctx.drawImage(img, 769 + x * 48, 1 + (y - 20) * 48, 46, 46, 1, 1, canvas.width, canvas.height);
+            }
+        }
+        getTileIndex() { }
     }
-    let tiles = new Tiles;
     let utilities = new Utilities;
+    let tiles = new Tiles;
     let menuVisible = false;
 
-    // EVENT LISTENING
+    // EVENT LISTENERS *****
     window.addEventListener('click', e => {
         if (menuVisible) {
             utilities.toggleMenu('hide');

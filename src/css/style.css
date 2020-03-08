@@ -55,6 +55,42 @@ body{
     background-color: #333;
     border:1px solid red;
 }
+.mapItem{
+    position:absolute;
+    box-sizing: border-box;
+    width:27px;
+    height:27px;
+    border:1px dotted grey;
+    cursor: pointer;
+}
+.mapItem:hover{
+    opacity:0.7;
+    background-color: #333;
+    border:1px solid red;
+}
+#map > .selected{
+    opacity:0.7;
+    background-color: #333;
+    border:1px solid red !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #menu {
     position: absolute;
