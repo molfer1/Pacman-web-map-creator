@@ -20,9 +20,10 @@ body{
 }
 
 #items{
-    margin-left:30px;
-    width:432px;
     position: absolute;
+    left:30px;
+    height:1120px;
+    width:432px;
 }
 .item{
     position: absolute;
@@ -39,7 +40,8 @@ body{
 #map{
     position: absolute;
     width: 756px;
-    margin-left:600px;
+    height:850px;
+    left:600px;
 }
 
 .mapTile{
@@ -82,15 +84,13 @@ body{
 
 
 
-
-
-
-
-
-
-
-
-
+#selectorField{
+    position:absolute;
+    display:none;
+    opacity:0.25;
+    background-color:red;
+    z-index:9;
+}
 
 #menu {
     position: absolute;

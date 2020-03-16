@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
     img.src = './data/img/sprites1.png';
     img.addEventListener('load', function () {
         new Generator(this, 27);
-    });
+    })
 
     class Generator {
         constructor(img, size) {
@@ -79,13 +79,13 @@ window.addEventListener('DOMContentLoaded', (e) => {
         toggleMenu(command) {
             menu.style.display = command === "show" ? "block" : "none";
             menuVisible = !menuVisible;
-        };
+        }
 
-        setMenuPosition({ top, left }) {
-            menu.style.left = `${left}px`;
-            menu.style.top = `${top}px`;
+        setMenuPosition(origin) {
+            menu.style.left = `${origin.left}px`;
+            menu.style.top = `${origin.top}px`;
             this.toggleMenu("show");
-        };
+        }
     };
     class Tiles {
         constructor() { }
@@ -115,10 +115,39 @@ window.addEventListener('DOMContentLoaded', (e) => {
                 mapTile.classList.remove('selected');
             }
             else {
-                mapTile.classList.add('selected');
-                let index = mapTab[y].findIndex(function (el) { return el.x == x });
-                mapTab[y][index].isSelected = true;
+                const selectedTiles = document.getElementsByClassName('selected');
+                let tilesCount = 0;
+                for (let i in selectedTiles) {
+                    tilesCount++;
+                }
+                if (tilesCount == 3) {
+                    mapTile.classList.add('selected');
+                    let index = mapTab[y].findIndex(function (el) { return el.x == x });
+                    mapTab[y][index].isSelected = true;
+                }
+                else if (tilesCount > 3) {
+                    if (crtlActive) {
+                        mapTile.classList.add('selected');
+                        let index = mapTab[y].findIndex(function (el) { return el.x == x });
+                        mapTab[y][index].isSelected = true;
+                    }
+                    else {
+                        return;
+                    }
+                }
+
             }
+        }
+        selectMultipleMapTiles(origin) {
+            const selector = document.getElementById('selectorField');
+            selector.style.display = 'block';
+            selector.style.left = `${origin.left}px`;
+            selector.style.top = `${origin.top}px`;
+            map.addEventListener('mousemove', e => {
+                const selector = document.getElementById('selectorField');
+                selector.style.width = e.clientX - origin.left + 'px';
+                selector.style.height = e.clientY - origin.top + 'px';
+            })
         }
         redrawImg(x, y, img, canvas) {
             let ctx = canvas.getContext('2d');
@@ -134,23 +163,40 @@ window.addEventListener('DOMContentLoaded', (e) => {
     let utilities = new Utilities;
     let tiles = new Tiles;
     let menuVisible = false;
+    let crtlActive = false;
+    let selectorActive = false;
 
     // EVENT LISTENERS *****
     window.addEventListener('click', e => {
         if (menuVisible) {
             utilities.toggleMenu('hide');
         }
-    });
+    })
     window.addEventListener('contextmenu', e => {
         e.preventDefault();
         const origin = { left: e.pageX, top: e.pageY };
         utilities.setMenuPosition(origin);
-    });
+    })
     window.addEventListener('keydown', e => {
         console.log(e);
         if (e.keyCode === 27) {
             utilities.toggleMenu('hide');
         }
+        if (e.keyCode === 17) {
+            crtlActive = true;
+        }
     })
-});
+    window.addEventListener('keyup', e => {
+        if (e.keyCode === 17) {
+            crtlActive = false;
+        }
+    })
+
+    // SELECTOR DIV
+    map.addEventListener('click', e => {
+        const origin = { left: e.clientX, top: e.clientY };
+        tiles.selectMultipleMapTiles(origin);
+    })
+})
+
 
