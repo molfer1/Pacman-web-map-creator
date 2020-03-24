@@ -4,6 +4,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
     const menu = document.getElementById('menu');
     const itemsTab = [];
     var mapTab = [];
+    var selectorOrigin;
     const img = new Image();
     img.src = './data/img/sprites1.png';
     img.addEventListener('load', function () {
@@ -138,16 +139,13 @@ window.addEventListener('DOMContentLoaded', (e) => {
 
             }
         }
-        selectMultipleMapTiles(origin) {
-            const selector = document.getElementById('selectorField');
-            selector.style.display = 'block';
-            selector.style.left = `${origin.left}px`;
-            selector.style.top = `${origin.top}px`;
-            map.addEventListener('mousemove', e => {
+        selectMultipleMapTiles() {
+            if (selectorActive) {
                 const selector = document.getElementById('selectorField');
-                selector.style.width = e.clientX - origin.left + 'px';
-                selector.style.height = e.clientY - origin.top + 'px';
-            })
+                selector.style.display = 'block';
+                selector.style.left = `${selectorOrigin.left}px`;
+                selector.style.top = `${selectorOrigin.top}px`;
+            }
         }
         redrawImg(x, y, img, canvas) {
             let ctx = canvas.getContext('2d');
@@ -193,9 +191,51 @@ window.addEventListener('DOMContentLoaded', (e) => {
     })
 
     // SELECTOR DIV
-    map.addEventListener('click', e => {
-        const origin = { left: e.clientX, top: e.clientY };
-        tiles.selectMultipleMapTiles(origin);
+    map.addEventListener('mousedown', e => {
+        console.log('mousedown')
+        selectorActive = true;
+        selectorOrigin = { left: e.pageX, top: e.pageY };
+        tiles.selectMultipleMapTiles();
+    })
+    map.addEventListener('mousemove', e => {
+        console.log(e.pageX, e.pageY)
+        if (selectorActive) {
+            const selector = document.getElementById('selectorField');
+            if ((e.pageX - selectorOrigin.left < 0) && (e.pageY - selectorOrigin.top >= 0)) { //LEFT
+                selector.style.left = e.pageX + 'px';
+
+                selector.style.width = selectorOrigin.left - e.pageX + 'px';
+                selector.style.height = e.pageY - selectorOrigin.top + 'px';
+            }
+            else if ((e.pageX - selectorOrigin.left >= 0) && (e.pageY - selectorOrigin.top < 0)) { //TOP
+                selector.style.top = e.pageY + 'px';
+
+                selector.style.width = e.pageX - selectorOrigin.left + 'px';
+                selector.style.height = selectorOrigin.top - e.pageY + 'px';
+            }
+            else if ((e.pageX - selectorOrigin.left < 0) && (e.pageY - selectorOrigin.top < 0)) { //BOTH
+                selector.style.left = e.pageX + 'px';
+                selector.style.top = e.pageY + 'px';
+
+                selector.style.width = selectorOrigin.left - e.pageX + 'px';
+                selector.style.height = selectorOrigin.top - e.pageY + 'px';
+            }
+            else {
+                selector.style.width = e.pageX - selectorOrigin.left + 'px';
+                selector.style.height = e.pageY - selectorOrigin.top + 'px';
+            }
+        }
+        else { return }
+    })
+    map.addEventListener('mouseup', e => {
+        console.log('mouseup')
+        selectorActive = false;
+        const selector = document.getElementById('selectorField');
+        selector.style.display = 'none';
+        selector.style.left = `${0}px`;
+        selector.style.top = `${0}px`;
+        selector.style.width = `${0}px`;
+        selector.style.height = `${0}px`;
     })
 })
 

@@ -2,3 +2,6 @@
 2. Make block selecting.
 3. Auto-selector.
 4. Context menu options.
+
+    Środek zaznaczenia zmienia swoje miejsce przy zmienach połówek osi,
+    jak zeskrolujesz strone to nie działa zaznaczenie tak jak ostatnio (naprawiłeś to wcześniej).

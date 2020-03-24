@@ -81,15 +81,14 @@ body{
 
 
 
-
-
-
 #selectorField{
     position:absolute;
     display:none;
+    box-sizing: border-box;
     opacity:0.25;
     background-color:red;
     z-index:9;
+    pointer-events: none;
 }
 
 #menu {
