@@ -71,15 +71,9 @@ body{
     border:1px solid red;
 }
 #map > .selected{
-    opacity:0.7;
     background-color: #333;
     border:1px solid red !important;
 }
-
-
-
-
-
 
 #selectorField{
     position:absolute;

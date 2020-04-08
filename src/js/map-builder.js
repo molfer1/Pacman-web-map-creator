@@ -113,52 +113,42 @@ window.addEventListener('DOMContentLoaded', (e) => {
         selectSingleMapTile(x, y) {
             console.log('tile x: ' + x + ' y: ' + y);
             const mapTile = document.getElementById(`c_${x}_${y}`);
-            if (mapTile.classList.contains('selected')) {
-                mapTab[y][x].isSelected = false;
+            console.log(mapTile);
+            if(mapTile.classList.contains('selected') && crtlActive){
+                console.log('deleteTile');
                 mapTile.classList.remove('selected');
+                mapTab[y][x].isSelected = false;
             }
-            else {
-                const selectedTiles = document.getElementsByClassName('selected');
-                console.log(selectedTiles);
-                let tilesCount = 0;
-                for (let i in selectedTiles) {
-                    tilesCount++;
-                }
-                if (tilesCount === 3) {
-                    mapTile.classList.add('selected');
-                    let index = mapTab[y].findIndex(function (el) { return el.x === x });
-                    mapTab[y][index].isSelected = true;
-                }
-                else if (tilesCount > 3) {
-                    if (crtlActive) {
-                        mapTile.classList.add('selected');
-                        let index = mapTab[y].findIndex(function (el) { return el.x === x });
-                        mapTab[y][index].isSelected = true;
-                    }
-                    else {
-                    }
-                }
-
+            else if(mapTile.classList.contains('selected') && !crtlActive){
+                if(this.checkIfAnyTilesAreSelected()){this.removeSelectedTiles(); console.log('removedAllTiles');}
+            }
+            else if(!mapTile.classList.contains('selected') && crtlActive){
+                console.log('addTile');
+                mapTile.classList.add('selected');
+                mapTab[y][x].isSelected = true;
+            }
+            else if(!mapTile.classList.contains('selected') && !crtlActive){
+                if(this.checkIfAnyTilesAreSelected()){this.removeSelectedTiles(); console.log('removedAllTiles');}
+                console.log('addTile');
+                mapTile.classList.add('selected');
+                mapTab[y][x].isSelected = true;
             }
         }
         selectMultipleMapTiles() {
-            console.log('multipleSelector');
-            if(!crtlActive){
-                if(this.checkIfAnyTilesAreSelected()){this.removeSelectedTiles()}
-            }
+            if(!crtlActive){if(this.checkIfAnyTilesAreSelected()){this.removeSelectedTiles()}}
             const selector = document.getElementById('selectorField');
             let left = parseInt(selector.style.left.slice(0, -2)) - 600;
             let top = parseInt(selector.style.top.slice(0, -2)) - 40;
             let width = parseInt(selector.style.width.slice(0, -2));
             let height = parseInt(selector.style.height.slice(0, -2));
-            let point1_x = Math.floor(left / 27);console.log('point1_x: '+ point1_x);
-            let point1_y = Math.floor(top / 27);console.log('point1_y: '+ point1_y);
-            let point2_x = Math.ceil((left + width)/27);console.log('point2_x: '+ point2_x);
-            let point2_y = Math.ceil((top + height)/27); console.log('point2_y: '+ point2_y);
+            let point1_x = Math.floor(left / 27);
+            let point1_y = Math.floor(top / 27);
+            let point2_x = Math.ceil((left + width)/27);
+            let point2_y = Math.ceil((top + height)/27);
             for(let y = point1_y; y < point2_y; y++){
                 for(let x = point1_x; x < point2_x; x++){
-                    const mapTile = document.getElementById(`c_${x}_${y}`);
-                    mapTile.classList.add('selected');
+                    const el = document.getElementById(`c_${x}_${y}`);
+                    el.classList.add('selected');
                     mapTab[y][x].isSelected = true;
                 }
             }
@@ -183,9 +173,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
                 }
             }
             const selectedTiles = document.getElementsByClassName('selected');
-            console.table(selectedTiles);
-            while(selectedTiles[0]) { // low performance (VERY LOW)
-                console.log('xd');
+            while(selectedTiles[0]) {
                 selectedTiles[0].classList.remove('selected');
             }
         }
@@ -208,7 +196,6 @@ window.addEventListener('DOMContentLoaded', (e) => {
         utilities.setMenuPosition(origin);
     });
     window.addEventListener('keydown', e => {
-        console.log(e);
         if (e.keyCode === 27) {
             utilities.toggleMenu();
         }
@@ -222,19 +209,18 @@ window.addEventListener('DOMContentLoaded', (e) => {
         }
     });
 
-    // SELECTOR DIV
+    //FIELD SELECTOR DIV
     map.addEventListener('mousedown', e => {
-        console.log('mousedown');
         selectorActive = true;
         selectorOrigin = { left: e.pageX, top: e.pageY };
         const selector = document.getElementById('selectorField');
-        selector.style.display = 'block';
         selector.style.left = `${selectorOrigin.left}px`;
         selector.style.top = `${selectorOrigin.top}px`;
     });
     map.addEventListener('mousemove', e => {
         if (selectorActive) {
             const selector = document.getElementById('selectorField');
+            selector.style.display = 'block';
             if ((e.pageX - selectorOrigin.left < 0) && (e.pageY - selectorOrigin.top >= 0)) { //LEFT
                 selector.style.left = e.pageX + 'px';
 
@@ -262,10 +248,11 @@ window.addEventListener('DOMContentLoaded', (e) => {
         }
     });
     map.addEventListener('mouseup', e => {
-        console.log('mouseup');
         selectorActive = false;
-        tiles.selectMultipleMapTiles();
         const selector = document.getElementById('selectorField');
+        if(selector.style.width.slice(0, -2) > 27 || selector.style.height.slice(0, -2) > 27){
+            tiles.selectMultipleMapTiles();
+        }
         selector.style.display = 'none';
         selector.style.left = `${0}px`;
         selector.style.top = `${0}px`;
