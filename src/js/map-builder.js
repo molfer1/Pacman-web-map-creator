@@ -2,11 +2,15 @@ window.addEventListener('DOMContentLoaded', (e) => {
     const items = document.getElementById('items');
     const map = document.getElementById('map');
     const menu = document.getElementById('menu');
+    document.getElementById("autoAdd").addEventListener('change',function () {tiles.toggleAutoSelect()});
+    // document.getElementById('undo').addEventListener('click',function(){tiles.undo()});
     const itemsTab = [];
     let mapTab = [];
+    let historyTab;
     let selectorOrigin;
     const img = new Image();
     img.src = './data/img/sprites1.png';
+
     img.addEventListener('load', function () {
         new Generator(this, 27);
     });
@@ -21,11 +25,12 @@ window.addEventListener('DOMContentLoaded', (e) => {
             for (let y = 0; y < 40; y++) {
                 itemsTab.push([]);
                 for (let x = 0; x <= 15; x++) {
-                    this.drawItemsTile(x, y, img, size);
                     itemsTab[y].push({
                         x: x,
                         y: y,
-                    })
+                        img: null
+                    });
+                    this.drawItemsTile(x, y, img, size);
                 }
             }
             this.genRight(size);
@@ -34,13 +39,14 @@ window.addEventListener('DOMContentLoaded', (e) => {
             for (let y = 0; y < 30; y++) {
                 mapTab.push([]);
                 for (let x = 0; x <= 27; x++) {
-                    this.drawMapTile(x, y, size);
                     mapTab[y].push({
                         x: x,
                         y: y,
                         isSelected: false,
-                        isFilled: false
-                    })
+                        isFilled: false,
+                        img: null,
+                    });
+                    this.drawMapTile(x, y, size);
                 }
             }
             console.log(mapTab);
@@ -69,9 +75,25 @@ window.addEventListener('DOMContentLoaded', (e) => {
             let ctx = canvas.getContext('2d');
             if (y < 20) {
                 ctx.drawImage(img, 1 + x * 48, 1 + y * 48, 46, 46, 1, 1, canvas.width, canvas.height);
+                itemsTab[y][x].img = {
+                    sx: 1 + x * 48,
+                    sy: 1 + y * 48,
+                    sw:46,
+                    sh:46,
+                    dx:1,
+                    dy:1,
+                };
             }
             else if (y >= 20) {
                 ctx.drawImage(img, 769 + x * 48, 1 + (y - 20) * 48, 46, 46, 1, 1, canvas.width, canvas.height);
+                itemsTab[y][x].img = {
+                    sx: 769 + x * 48,
+                    sy: 1 + (y-20) * 48,
+                    sw:46,
+                    sh:46,
+                    dx:1,
+                    dy:1,
+                };
             }
         }
     }
@@ -92,6 +114,9 @@ window.addEventListener('DOMContentLoaded', (e) => {
                 menu.style.display = 'block';
             }
         }
+        addToHistory(){
+            historyTab = [...mapTab];
+        }
     }
     class Tiles {
         constructor() { }
@@ -101,6 +126,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
                 for (const el of raw) {
                     if (el.isSelected) {
                         const tile = document.getElementById(`c_${el.x}_${el.y}`);
+                        if(tile.classList.contains('selected')){lastSelectedTile = [el.x,el.y]}
                         tile.classList.remove('mapTile', 'selected', 'mapItem');
                         tile.classList.add('mapItem');
                         this.redrawImg(x, y, img, tile);
@@ -109,6 +135,8 @@ window.addEventListener('DOMContentLoaded', (e) => {
                     }
                 }
             }
+            if(autoSelectActive){tiles.autoSelectNextMapTile()}
+            utilities.addToHistory();
         }
         selectSingleMapTile(x, y) {
             console.log('tile x: ' + x + ' y: ' + y);
@@ -153,6 +181,24 @@ window.addEventListener('DOMContentLoaded', (e) => {
                 }
             }
         }
+        autoSelectNextMapTile(){
+            if((lastSelectedTile[0] + 1) > 27){
+                document.getElementById(`c_${0}_${lastSelectedTile[1] + 1}`).classList.add('selected');
+                mapTab[lastSelectedTile[1] + 1][0].isSelected = true;
+            }
+            else{
+                document.getElementById(`c_${lastSelectedTile[0] + 1}_${lastSelectedTile[1]}`).classList.add('selected');
+                mapTab[lastSelectedTile[1]][lastSelectedTile[0] + 1].isSelected = true;
+            }
+        }
+        toggleAutoSelect(){
+            if(!autoSelectActive){
+                autoSelectActive = true;
+            }
+            else{
+                autoSelectActive = false;
+            }
+        }
         redrawImg(x, y, img, canvas) {
             let ctx = canvas.getContext('2d');
             if (y < 20) {
@@ -177,12 +223,36 @@ window.addEventListener('DOMContentLoaded', (e) => {
                 selectedTiles[0].classList.remove('selected');
             }
         }
+        // undo(){
+        //     mapTab = [...historyTab];
+        //     for (let y = 0; y < 30; y++) {
+        //         for (let x = 0; x <= 27; x++) {
+        //             const canvas = document.getElementById(`c_${x}_${y}`);
+        //             this.undoRedrawImg(x, y,img,canvas);
+        //         }
+        //     }
+        // }
+        // undoRedrawImg(x, y,img,canvas){
+        //     let ctx = canvas.getContext('2d');
+        //     let val = itemsTab[mapTab[y][x].img[0]][mapTab[y][x].img[1]].img;
+        //     if (y < 20) {
+        //         ctx.drawImage(img, val.sx, val.sy, val.sw, val.sh, val.dx, val.dy, canvas.width, canvas.height);
+        //     }
+        //     else if (y >= 20) {
+        //         ctx.drawImage(img, val.sx, val.sy, val.sw, val.sh, val.dx, val.dy, canvas.width, canvas.height);
+        //     }
+        // }
+        getCoordsById(id){
+            return id.match(/\d+/g).map(Number);
+        }
     }
     let utilities = new Utilities;
     let tiles = new Tiles;
     let menuVisible = false;
     let crtlActive = false;
     let selectorActive = false;
+    let autoSelectActive = false;
+    let lastSelectedTile;
     console.table(mapTab);
 
     // EVENT LISTENERS *****
